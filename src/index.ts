@@ -61,13 +61,14 @@ if (!databaseUrl) {
   process.exit(1);
 }
 
+// Create resource URL without sensitive info
 const resourceBaseUrl = new URL(databaseUrl);
-resourceBaseUrl.protocol = "redshift:";
-resourceBaseUrl.password = "";
+console.log(resourceBaseUrl);
+const sslEnabled = resourceBaseUrl.searchParams.get("ssl") === "true";
 
 const pool = new pg.Pool({
   connectionString: databaseUrl,
-  ssl: resourceBaseUrl.searchParams.get("sslmode") === "require",
+  ssl: sslEnabled ? { rejectUnauthorized: true } : false,
 });
 
 // Resource paths
