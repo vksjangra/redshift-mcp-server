@@ -2,23 +2,52 @@
 
 This is a Model Context Protocol (MCP) server for Amazon Redshift implemented in TypeScript. It follows Anthropic's implementation pattern and provides Cursor IDE and other MCP-compatible clients with rich contextual information about your Redshift data warehouse. This server enables LLMs to inspect database schemas and execute read-only queries.
 
-## Integration with Cursor
+## Integration with MCP Clients
 
-This MCP server allows Cursor to:
+This MCP server works with various MCP-compatible clients. Here's how to configure it:
 
-- Explore your Redshift database schema
-- Execute read-only SQL queries
-- Get table statistics and sample data
-- Find columns across your data warehouse
+### Project-Specific Configuration
+Create a `.cursor/mcp.json` file in your project directory:
 
-To use this server with Cursor:
+```json
+{
+  "mcpServers": {
+    "redshift-mcp": {
+      "command": "node",
+      "args": ["path/to/dist/index.js"],
+      "env": {
+        "DATABASE_URL": "redshift://username:password@hostname:port/database?ssl=true"
+      }
+    }
+  }
+}
+```
 
-1. Start the MCP server (see Usage below)
-2. In Cursor, open the Command Palette (Cmd/Ctrl + Shift + P)
-3. Type "Connect to MCP Server"
-4. Enter the server's stdio URL (typically `stdio://localhost`)
+### Global Configuration
+For using across all projects, create `~/.cursor/mcp.json` in your home directory with the same configuration.
 
-The Cursor AI assistant will now have access to your Redshift database schema and can help you write and execute queries.
+### Client-Specific Setup
+
+#### Cursor IDE
+1. The server will be automatically detected if configured in `mcp.json`
+2. Tools will appear under "Available Tools" in MCP settings
+3. Agent will automatically use the tools when relevant
+
+#### Other MCP Clients
+Configure the server using stdio transport:
+```json
+{
+  "servers": [
+    {
+      "name": "redshift-mcp",
+      "transport": {
+        "kind": "stdio",
+        "command": ["node", "path/to/dist/index.js"]
+      }
+    }
+  ]
+}
+```
 
 ## Prerequisites
 
@@ -48,26 +77,26 @@ npm run build
 The server requires a Redshift connection URL via the `DATABASE_URL` environment variable:
 
 ```bash
-export DATABASE_URL="postgres://username:password@redshift-host:5439/database?sslmode=require"
+export DATABASE_URL="redshift://username:password@hostname:port/database?ssl=true"
 npm start
 ```
 
 Or you can run directly:
 
 ```bash
-DATABASE_URL="postgres://username:password@redshift-host:5439/database?sslmode=require" node dist/index.js
+DATABASE_URL="redshift://username:password@hostname:port/database?ssl=true" node dist/index.js
 ```
 
 For development, you can use:
 
 ```bash
-DATABASE_URL="postgres://username:password@redshift-host:5439/database?sslmode=require" npm run dev
+DATABASE_URL="redshift://username:password@hostname:port/database?ssl=true" npm run dev
 ```
 
 ### Connection URL Format
 
 ```plaintext
-postgres://username:password@hostname:port/database?sslmode=require
+redshift://username:password@hostname:port/database?ssl=true
 ```
 
 - **username**: Your Redshift username
@@ -75,7 +104,14 @@ postgres://username:password@hostname:port/database?sslmode=require
 - **hostname**: Your Redshift cluster endpoint
 - **port**: Usually 5439 for Redshift
 - **database**: The name of your database
-- **sslmode**: Set to "require" for secure connection
+- **ssl**: Set to "true" for secure connection (recommended)
+
+Additional connection parameters:
+
+- `ssl=true`: Required for secure connections (recommended)
+- `timeout=10`: Connection timeout in seconds
+- `keepalives=1`: Enable TCP keepalive
+- `keepalives_idle=130`: TCP keepalive idle time
 
 ## Project Structure
 
