@@ -4,55 +4,6 @@ This is a Model Context Protocol (MCP) server for Amazon Redshift implemented in
 
 ## Integration with MCP Clients
 
-This MCP server works with various MCP-compatible clients. Here's how to configure it:
-
-### Project-Specific Configuration
-Create a `.cursor/mcp.json` file in your project directory:
-
-```json
-{
-  "mcpServers": {
-    "redshift-mcp": {
-      "command": "node",
-      "args": ["path/to/dist/index.js"],
-      "env": {
-        "DATABASE_URL": "redshift://username:password@hostname:port/database?ssl=true"
-      }
-    }
-  }
-}
-```
-
-### Global Configuration
-For using across all projects, create `~/.cursor/mcp.json` in your home directory with the same configuration.
-
-### Client-Specific Setup
-
-#### Cursor IDE
-1. The server will be automatically detected if configured in `mcp.json`
-2. Tools will appear under "Available Tools" in MCP settings
-3. Agent will automatically use the tools when relevant
-
-#### Other MCP Clients
-Configure the server using stdio transport:
-```json
-{
-  "servers": [
-    {
-      "name": "redshift-mcp",
-      "transport": {
-        "kind": "stdio",
-        "command": ["node", "path/to/dist/index.js"]
-      }
-    }
-  ]
-}
-```
-
-## Integration with MCP Clients
-
-This MCP server works with various MCP-compatible clients. Here's how to configure it:
-
 ### Project-Specific Configuration
 
 Create a `.cursor/mcp.json` file in your project directory:
