@@ -127,15 +127,15 @@ Additional connection parameters:
 
 ### Tools Available in Cursor
 
-- **query**
+- **redshift_query**
   - Execute read-only SQL queries against the connected Redshift database
   - Example: "Write a query to show all tables in the public schema"
 
-- **describe_table**
+- **redshift_describe_table**
   - Get detailed information about a specific table
   - Example: "Show me the structure of the users table"
 
-- **find_column**
+- **redshift_find_column**
   - Find tables containing columns with specific name patterns
   - Example: "Find all tables that have a column containing 'email'"
 
