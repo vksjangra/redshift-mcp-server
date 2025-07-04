@@ -270,7 +270,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "query",
+        name: "redshift_query",
         description: "Run a read-only SQL query against Redshift",
         inputSchema: {
           type: "object",
@@ -281,7 +281,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "describe_table",
+        name: "redshift_describe_table",
         description: "Get detailed information about a specific table",
         inputSchema: {
           type: "object",
@@ -293,7 +293,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: "find_column",
+        name: "redshift_find_column",
         description: "Find tables containing columns with specific name patterns",
         inputSchema: {
           type: "object",
@@ -313,7 +313,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     // Run a read-only SQL query
-    if (request.params.name === "query") {
+    if (request.params.name === "redshift_query") {
       const sql = request.params.arguments?.sql as string;
 
       try {
@@ -340,7 +340,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     // Get detailed information about a specific table
-    else if (request.params.name === "describe_table") {
+    else if (request.params.name === "redshift_describe_table") {
       const schema = request.params.arguments?.schema as string;
       const table = request.params.arguments?.table as string;
 
@@ -398,7 +398,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     // Find tables containing columns with specific name patterns
-    else if (request.params.name === "find_column") {
+    else if (request.params.name === "redshift_find_column") {
       const pattern = request.params.arguments?.pattern as string;
 
       try {
@@ -427,7 +427,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     else {
       return {
-        content: [{ type: "text", text: `Unknown tool: ${request.params.name}` }],
+        content: [{ type: "text", text: `Unknown tool: ${request.params.name}. Expected one of: redshift_query, redshift_describe_table, redshift_find_column` }],
         isError: true,
       };
     }
